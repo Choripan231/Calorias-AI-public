@@ -5,37 +5,41 @@ import os
 
 app = FastAPI()
 
-# CORS para permitir Expo/React Native
+# CORS para permitir Expo / React Native / Web
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],       # Permitir cualquier origen (Expo, móvil, web)
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Ruta a la base de datos de alimentos
+# Ruta al archivo de base de datos
 DB_PATH = os.path.join(os.path.dirname(__file__), "nutrition_db.json")
 
-# Cargar alimentos
+# Cargar base de datos
 def load_db():
     with open(DB_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
-# ---------- RUTAS -------------
+
+# -------------------- RUTAS --------------------
 
 @app.get("/")
 def root():
     return {"status": "backend ok", "message": "CaloriasAI backend activo"}
 
+
 @app.get("/nutrition")
 def get_nutrition():
-    """Devuelve todos los alimentos"""
+    """Devuelve todos los alimentos."""
     data = load_db()
     return data
 
+
 @app.get("/nutrition/{food_name}")
 def get_food(food_name: str):
-    """Busca un alimento por nombre exacto"""
+    """Busca un alimento por su nombre exacto."""
     db = load_db()
     food_name = food_name.lower()
 
@@ -45,8 +49,11 @@ def get_food(food_name: str):
 
     return {"error": "Food not found"}
 
-# Ejemplo de predicción simple
+
 @app.post("/predict")
 def predict(data: dict):
-    """Demostración placeholder"""
-    return {"message": "Modelo no integrado aún", "received": data}
+    """Placeholder (modelo no integrado aún)."""
+    return {
+        "message": "Modelo no integrado aún",
+        "received": data
+    }
